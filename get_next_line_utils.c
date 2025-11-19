@@ -1,4 +1,4 @@
-#include <stddef.h>
+#include "get_next_line.h"
 
 char	*ft_strdup(const char *str)
 {
@@ -48,7 +48,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
+size_t	ft_strcat(char *dest, const char *src)
 {
 	size_t	i;
 	size_t	ii;
@@ -61,10 +61,8 @@ size_t	ft_strlcat(char *dest, const char *src, size_t size)
 	while (src[ii] != '\0')
 		ii++;
 	lentotal = ii + i;
-	if (size <= i)
-		return (size + ii);
 	ii = 0;
-	while (src[ii] != '\0' && i < size - 1)
+	while (src[ii] != '\0')
 	{
 		dest[i] = src[ii];
 		i++;
@@ -75,21 +73,16 @@ size_t	ft_strlcat(char *dest, const char *src, size_t size)
 	return (lentotal);
 }
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t siz )
+size_t	ft_strcpy(char *dest, const char *src)
 {
 	size_t	i;
 
 	i = 0;
-	if (siz != 0)
-	{
-		while (i < siz - 1 && src[i] != '\0')
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
-	}
 	while (src[i] != '\0')
+	{
+		dest[i] = src[i];
 		i++;
+	}
+	dest[i] = '\0';
 	return (i);
 }
