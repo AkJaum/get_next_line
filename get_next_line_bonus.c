@@ -42,26 +42,6 @@ char	*ft_cat_n_check(char *lastbuffer, char *buffer)
 	return (temp);
 }
 
-void	*ft_check(int fd, char **lastbuffer, char **buffer, ssize_t *bytes_read)
-{
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	*buffer = malloc(BUFFER_SIZE + 1);
-	if (!*buffer)
-		return (NULL);
-	if (!*lastbuffer)
-	{
-		*bytes_read = read(fd, *buffer, BUFFER_SIZE);
-		if (*bytes_read <= 0)
-			return (ft_handle_error(buffer, NULL));
-		(*buffer)[*bytes_read] = '\0';
-		*lastbuffer = ft_substr(*buffer, 0, *bytes_read);
-		if (!*lastbuffer)
-			return (ft_handle_error(buffer, NULL));
-	}
-	return (lastbuffer);
-}
-
 char	*ft_return_next_line(char *newline_pos, char **lastbuffer)
 {
 	char	*tmp;
@@ -90,30 +70,51 @@ char	*ft_return_next_line(char *newline_pos, char **lastbuffer)
 	return (line);
 }
 
+void *ft_check(int fd, char **lastbuffer, char **buffer, ssize_t *bytes_read)
+{
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	*buffer = malloc(BUFFER_SIZE + 1);
+	if (!*buffer)
+		return (NULL);
+	if (!*lastbuffer)
+	{
+		*bytes_read = read(fd, *buffer, BUFFER_SIZE);
+		if (*bytes_read <= 0)
+			return (ft_handle_error(buffer, NULL));
+		(*buffer)[*bytes_read] = '\0';
+		*lastbuffer = ft_substr(*buffer, 0, *bytes_read);
+		if (!*lastbuffer)
+			return (ft_handle_error(buffer, NULL));
+	}
+	return (lastbuffer);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	*lastbuffer;
+	static char	*lastbuffer[4096];
 	char		*buffer;
 	char		*line;
 	char		*newline_pos;
 	ssize_t		bytes_read;
 
-	if (!(ft_check(fd, &lastbuffer, &buffer, &bytes_read)))
+	if (!(ft_check(fd, &lastbuffer[fd], &buffer, &bytes_read)))
 		return (NULL);
-	while (!(ft_strchr(lastbuffer, '\n')) && lastbuffer != NULL)
+	/* procura por nova linha na leitura acumulada */
+	while (!(newline_pos = ft_strchr(lastbuffer[fd], '\n')) && lastbuffer[fd] != NULL)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read <= 0)
 			break ;
 		buffer[bytes_read] = '\0';
-		lastbuffer = ft_cat_n_check(lastbuffer, buffer);
-		if (!lastbuffer)
-			return (ft_handle_error(&buffer, &lastbuffer));
+		lastbuffer[fd] = ft_cat_n_check(lastbuffer[fd], buffer);
+		if (!lastbuffer[fd])
+			return (ft_handle_error(&buffer, &lastbuffer[fd]));
 	}
-	newline_pos = ft_strchr(lastbuffer, '\n');
+	newline_pos = ft_strchr(lastbuffer[fd], '\n');
 	free(buffer);
-	if (!lastbuffer || !*lastbuffer)
-		return (ft_handle_error(NULL, &lastbuffer));
-	line = ft_return_next_line(newline_pos, &lastbuffer);
+	if (!lastbuffer[fd] || !*lastbuffer[fd])
+		return (ft_handle_error(NULL, &lastbuffer[fd]));
+	line = ft_return_next_line(newline_pos, &lastbuffer[fd]);
 	return (line);
 }
