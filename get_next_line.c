@@ -117,3 +117,21 @@ char	*get_next_line(int fd)
 	line = ft_return_next_line(newline_pos, &lastbuffer);
 	return (line);
 }
+
+/*
+#include <stdio.h>
+#include <fcntl.h>
+
+int main(void)
+{
+	int fd = open("get_next_line.h", O_RDONLY);
+	char *line;
+
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	close(fd);
+	return 0;
+}*/

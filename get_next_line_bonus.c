@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_main.c                                          :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jneris-d <tbpjaum@outlook.com>             +#+  +:+       +#+        */
+/*   By: jneris-d <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 0000/00/00 00:00:00 by jneris-d          #+#    #+#             */
-/*   Updated: 0000/00/00 00:00:00 by jneris-d         ###   ########.fr       */
+/*   Created: 2025/11/24 12:44:25 by jneris-d          #+#    #+#             */
+/*   Updated: 2025/11/24 12:50:42 by jneris-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	*ft_handle_error(char **buffer, char **lastbuffer)
 {
@@ -70,7 +70,7 @@ char	*ft_return_next_line(char *newline_pos, char **lastbuffer)
 	return (line);
 }
 
-void *ft_check(int fd, char **lastbuffer, char **buffer, ssize_t *bytes_read)
+void	*ft_check(int fd, char **lastbuffer, char **buffer, ssize_t *bytes_read)
 {
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -100,8 +100,7 @@ char	*get_next_line(int fd)
 
 	if (!(ft_check(fd, &lastbuffer[fd], &buffer, &bytes_read)))
 		return (NULL);
-	/* procura por nova linha na leitura acumulada */
-	while (!(newline_pos = ft_strchr(lastbuffer[fd], '\n')) && lastbuffer[fd] != NULL)
+	while (!(ft_strchr(lastbuffer[fd], '\n')) && lastbuffer[fd] != NULL)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read <= 0)
